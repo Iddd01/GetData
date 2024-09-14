@@ -1,0 +1,28 @@
+Sub TimKiem()
+ Dim Rng As Range, sRng As Range, Cls As Range, Sh As Worksheet
+ Dim Rws As Long, VTr As Byte, VTr0 As Integer
+ Dim ShName As String
+ 
+ TenTrang
+ With Sheets("GPE")
+    For Each Cls In .Range(.[A4], .[A4].End(xlDown))
+        VTr = InStr(Trang, Cls.Value)
+        If VTr Then
+            ShName = Replace(Mid$(Trang, VTr, 9), "0", "")
+            Cls.Offset(, 2) = ShName
+            Set Sh = ThisWorkbook.Worksheets(ShName)
+            Rws = Sh.UsedRange.Rows.Count
+            Set Rng = Sh.[A2].Resize(Rws)
+            Set sRng = Rng.Find(Cls.Offset(, 1).Value, , xlFormulas, xlWhole)
+            If Not sRng Is Nothing Then
+                Cls.Offset(, 2).Resize(, 2).Value = sRng.Offset(, 1).Resize(, 2).Value
+                Cls.Offset(, 6).Value = sRng.Offset(, 3).Value
+            Else
+                MsgBox "GPE"
+            End If
+        Else
+            Cls.Offset(, 2) = "Nothing!"
+        End If
+    Next Cls
+ End With
+End Sub
